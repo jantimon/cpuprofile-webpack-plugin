@@ -1,0 +1,21 @@
+{
+	"compilerOptions": {
+		"allowSyntheticDefaultImports": true,
+		"allowUnreachableCode": false,
+		"jsx": "react",
+		"sourceMap": true,
+		"target": "es5",
+		"module": "esnext",
+		"moduleResolution": "node",
+		"emitDecoratorMetadata": false,
+		"experimentalDecorators": true,
+		"declaration": true,
+		"noImplicitAny": false,
+		"noImplicitReturns": true,
+		"strictNullChecks": true,
+    "importHelpers": true,
+    "skipLibCheck": true,
+		"lib": ["es2015", "es2016", "es2017", "es2018", "dom"]
+	},
+	"exclude": ["dist", "build", "node_modules"]
+}

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Profile</title>
+  </head>
+  <body>
+    <script type="text/json" id="cpuProfile">%%profile%%</script>
+    <%= htmlWebpackPlugin.files.css.map((cssFile) => {
+      return "<styl" + "e>" + compilation.assets[cssFile.substr(htmlWebpackPlugin.files.publicPath.length)].source() + "</style>"
+    }).join('') %>
+    <%= htmlWebpackPlugin.files.js.map((jsFile) => {
+      return "<scri" + "pt>" + compilation.assets[jsFile.substr(htmlWebpackPlugin.files.publicPath.length)].source() + "</script>"
+    }).join('') %>
+  </body>
+</html>

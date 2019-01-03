@@ -1,0 +1,41 @@
+{
+  "name": "cpuprofile-webpack-plugin",
+  "version": "1.0.0",
+  "description": "cpuprofile-webpack-plugin",
+  "scripts": {
+    "commit": "git-cz",
+    "release": "npx standard-version",
+    "build": "npm-run-all build:*",
+    "build:frontend": "npx lerna exec npm run build",
+    "build:copy-frontend": "cpy packages/cpuprofile-viewer/dist/production.html ./",
+    "prettier": "npm-run-all prettier:*",
+    "prettier:tsx": "prettier --write packages/**/*.tsx",
+    "prettier:ts": "prettier --write packages/**/*.ts",
+    "prettier:js": "prettier --write **/*.js",
+    "postinstall": "npx lerna bootstrap",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "sync-cpuprofiler": "1.1.0"
+  },
+  "devDependencies": {
+    "cpy-cli": "2.0.0",
+    "npm-run-all": "4.1.5",
+    "prettier": "1.15.3",
+    "commitizen": "3.0.5",
+    "cz-conventional-changelog": "2.1.0"
+  },
+  "files": [
+    "lib/",
+    "index.js",
+    "production.html"
+  ],
+  "main": "./index.js",
+  "author": "Jan Nicklas",
+  "license": "MIT",
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}

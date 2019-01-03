@@ -1,0 +1,38 @@
+{
+  "name": "cpuprofile-viewer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The cpu-profile-frontend",
+  "author": "Jan Nicklas",
+  "license": "MIT",
+  "dependencies": {
+    "@types/d3": "5.5.0",
+    "@types/react": "16.7.18",
+    "@types/react-dom": "16.0.11",
+    "asset-config-webpack-plugin": "1.2.0",
+    "d3": "5.7.0",
+    "d3-flame-graph": "2.0.6",
+    "d3-flame-graphs": "3.1.1",
+    "mobx": "5.8.0",
+    "mobx-react": "5.4.3",
+    "react": "16.7.0",
+    "react-dom": "16.7.0"
+  },
+  "devDependencies": {
+    "@material-ui/core": "3.8.1",
+    "clean-webpack-plugin": "1.0.0",
+    "cpuprofile-to-flamegraph": "1.0.0",
+    "html-webpack-plugin": "4.0.0-beta.5",
+    "raw-loader": "1.0.0",
+    "scss-config-webpack-plugin": "1.0.0",
+    "ts-config-webpack-plugin": "1.2.1",
+    "typescript": "3.2.2",
+    "webpack": "4.28.3",
+    "webpack-cli": "3.1.2",
+    "webpack-dev-server": "3.1.14"
+  },
+  "scripts": {
+    "start": "webpack-dev-server --mode development",
+    "build": "webpack --mode production"
+  }
+}
