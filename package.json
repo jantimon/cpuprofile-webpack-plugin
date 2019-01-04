@@ -16,7 +16,8 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "sync-cpuprofiler": "1.1.1"
+    "sync-cpuprofiler": "1.1.1",
+    "webpack": "4.28.3"
   },
   "devDependencies": {
     "cpy-cli": "2.0.0",
