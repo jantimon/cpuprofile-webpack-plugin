@@ -33,3 +33,6 @@ module.exports = {
 }
 ```
 
+## Example
+
+[Example Profile (6MB)](http://jantimon.github.io/cpuprofile-webpack-plugin)
