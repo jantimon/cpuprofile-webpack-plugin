@@ -24,7 +24,7 @@ webpack-dev-server --plugin cpuprofile-webpack-plugin
 ### webpack.config.js
 
 ```js
-const const CpuProfilerWebpackPlugin =  = require('cpuprofile-webpack-plugin');
+const const CpuProfilerWebpackPlugin = require('cpuprofile-webpack-plugin');
 
 module.exports = {
   plugins: [
