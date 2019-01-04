@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.4.0"></a>
+# [1.4.0](https://github.com/jantimon/cpuprofile-webpack-plugin/compare/v1.3.0...v1.4.0) (2019-01-04)
+
+
+### Features
+
+* Add checkbox to hide garbage collection ([17f9502](https://github.com/jantimon/cpuprofile-webpack-plugin/commit/17f9502))
+
+
+
 <a name="1.3.0"></a>
 # [1.3.0](https://github.com/jantimon/cpuprofile-webpack-plugin/compare/v1.2.0...v1.3.0) (2019-01-04)
 
