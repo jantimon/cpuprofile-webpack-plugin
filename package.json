@@ -16,7 +16,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "sync-cpuprofiler": "1.1.0"
+    "sync-cpuprofiler": "1.1.1"
   },
   "devDependencies": {
     "cpy-cli": "2.0.0",
