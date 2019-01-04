@@ -1,23 +1,23 @@
-import "d3-flame-graph/dist/d3-flamegraph.css";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { FlameGraphComponent } from "./components/FlameGraph";
-import "./d3-flame-graph.scss";
-import { FlameGraphNode } from "cpuprofile-to-flamegraph";
-import { ProfileStore } from "./stores/ProfileStore";
-import { colorMapper } from "./utils/colors";
-import { ColorPalette } from "./components/ColorPalette";
-import { observer } from "mobx-react";
-import { prettifyExecutionTime } from "./utils/times";
-import Select from "@material-ui/core/Select";
 import Paper from "@material-ui/core/Paper";
-import Toolbar from "@material-ui/core/Toolbar";
-import AppBar from "@material-ui/core/AppBar";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import { FlameGraphNode } from "cpuprofile-to-flamegraph";
+import "d3-flame-graph/dist/d3-flamegraph.css";
+import { observer } from "mobx-react";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+import { ColorPalette } from "./components/ColorPalette";
+import { FlameGraphComponent } from "./components/FlameGraph";
+import { Header } from "./components/Header";
+import "./d3-flame-graph.scss";
+import { ProfileStore } from "./stores/ProfileStore";
+import { colorMapper } from "./utils/colors";
+import { prettifyExecutionTime } from "./utils/times";
+import { Summary } from "./components/Summary";
+import { Options } from "./components/Options";
 
 const profileElement = document.getElementById("cpuProfile")!;
 const data = JSON.parse(profileElement.innerHTML);
@@ -46,55 +46,12 @@ function labelMapper({ data }: { data: FlameGraphNode }) {
 
 const App = observer(() => (
   <React.Fragment>
-    <AppBar position="static">
-      <Toolbar>
-        <Select
-          style={{ color: "white" }}
-          onChange={({ target }) => (profileStore.slot = Number(target.value))}
-          value={profileStore.slot}
-        >
-          {profileStore.slots.map(({ duration }, i) => (
-            <option value={i} key={i}>
-              CPU Profile Slot {i} {prettifyExecutionTime(duration)}
-            </option>
-          ))}
-        </Select>
-      </Toolbar>
-    </AppBar>
-
+    <Header profileStore={profileStore} />
     <Paper style={{ padding: 10 }}>
       <div style={{ display: "flex" }}>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ flexGrow: 1 }}>
-            <ColorPalette />
-          </div>
-          <div style={{ alignSelf: "flex-end", flexShrink: 1 }}>
-            Execution time:{" "}
-            {prettifyExecutionTime(profileStore.activeSlotExecutionTime)}
-          </div>
-        </div>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Type</TableCell>
-              <TableCell align="right">Duration</TableCell>
-              <TableCell align="right">Relative</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {profileStore.durationSummary.map(row => (
-              <TableRow key={row.name}>
-                <TableCell component="th" scope="row">
-                  {row.name}
-                </TableCell>
-                <TableCell align="right">
-                  {prettifyExecutionTime(row.duration)}
-                </TableCell>
-                <TableCell align="right">{row.relative}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <ColorPalette />
+        <Options profileStore={profileStore} />
+        <Summary profileStore={profileStore} />
       </div>
     </Paper>
 

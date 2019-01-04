@@ -12,16 +12,59 @@ export class ProfileStore {
    */
   @observable minimalPauseTime: number = 200000;
   @observable slot: number = 0;
+  @observable showGarbageCollector: boolean = true;
+  @observable hideSmallSlots: boolean = true;
 
   constructor(cpuProfile: Profile) {
     this.cpuProfile = cpuProfile;
+  }
+
+  @computed get filteredCpuProfile(): Profile {
+    if (this.showGarbageCollector) {
+      return this.cpuProfile;
+    }
+    // Get profile without garbage collector entries
+    const garbageCollectorIds = this.cpuProfile.nodes
+      .filter(node => node.callFrame.functionName === "(garbage collector)")
+      .map(node => node.id);
+    const filteredSamples: Array<number> = [];
+    const filteredTimeDeltas: Array<number> = [];
+    for (let i = 0; i < this.cpuProfile.samples.length; i++) {
+      const sampleId = this.cpuProfile.samples[i];
+      if (garbageCollectorIds.indexOf(sampleId) === -1) {
+        filteredSamples.push(sampleId);
+        filteredTimeDeltas.push(this.cpuProfile.timeDeltas[i]);
+      }
+    }
+    return {
+      ...this.cpuProfile,
+      samples: filteredSamples,
+      timeDeltas: filteredTimeDeltas
+    };
   }
 
   /**
    * Get the merged flameGraph root node
    */
   @computed get mergedFlameGraph() {
-    return convertToMergedFlameGraph(this.cpuProfile);
+    const graph = convertToMergedFlameGraph(this.filteredCpuProfile);
+    graph.children.unshift({
+      value: 0,
+      name: "(init)",
+      executionTime: 0,
+      children: [],
+      profileNode: {
+        id: -1,
+        callFrame: {
+          scriptId: "-1",
+          functionName: "(init)",
+          lineNumber: -1,
+          columnNumber: -1,
+          url: ""
+        }
+      }
+    });
+    return graph;
   }
 
   /**
@@ -56,14 +99,24 @@ export class ProfileStore {
         currentExecutionSum += node.executionTime;
       }
     }
-    return slots;
+    const filteredSlots =
+      this.hideSmallSlots === false
+        ? slots
+        : slots.filter((slot, i) => slot.duration > 50000);
+    filteredSlots.unshift({
+      start: 0,
+      end: 0,
+      duration: 0
+    });
+    return filteredSlots;
   }
 
   /**
    * Returns the flame graph of the active slot
    */
   @computed get activeSlotFlameGraph() {
-    const breakIndex = this.slots[this.slot];
+    const activeSlot = Math.min(this.slots.length - 1, this.slot);
+    const breakIndex = this.slots[activeSlot];
     const childNodes = this.mergedFlameGraph.children.filter(
       (_, i) => i >= breakIndex.start && i <= breakIndex.end
     );
@@ -146,9 +199,12 @@ export class ProfileStore {
       return recursiveChildTimes;
     }
     const nodeTimes = getNodeTime(this.activeSlotFlameGraph);
-    const sum = Object.keys(nodeTimes).reduce(
-      (sum, timeName) => sum + nodeTimes[timeName],
-      0
+    const sum = Math.max(
+      1,
+      Object.keys(nodeTimes).reduce(
+        (sum, timeName) => sum + nodeTimes[timeName],
+        0
+      )
     );
     const result = Object.keys(nodeTimes).map(timeName => {
       return {

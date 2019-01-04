@@ -4,9 +4,9 @@ import * as React from "react";
 const colorNames = Object.keys(colors);
 
 export const ColorPalette = () => (
-  <div className="palette">
+  <div style={{ minWidth: 200, paddingTop: 15 }}>
     {colorNames.map(colorName => (
-      <div key={colorName}>
+      <div key={colorName} style={{ whiteSpace: "nowrap" }}>
         <div
           className="palette__color"
           style={{

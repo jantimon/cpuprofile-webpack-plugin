@@ -2,7 +2,7 @@ import React from "react";
 import { FlameGraphNode } from "cpuprofile-to-flamegraph";
 import { easeCubic, select } from "d3";
 import { flamegraph } from "d3-flame-graph";
-import { observer } from "mobx-react";
+import { observer, propTypes } from "mobx-react";
 
 type Props = {
   colorMapper: ({ data }: { data: FlameGraphNode }) => string;
@@ -31,8 +31,10 @@ export class FlameGraphComponent extends React.Component<Props, {}> {
     this.renderChart();
   }
 
-  componentDidUpdate() {
-    this.renderChart();
+  componentDidUpdate(previousProps: Props) {
+    if (previousProps.flameGraphNode !== this.props.flameGraphNode) {
+      this.renderChart();
+    }
   }
 
   renderChart() {
