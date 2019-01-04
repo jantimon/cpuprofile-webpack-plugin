@@ -10,7 +10,7 @@ export class ProfileStore {
   /**
    * Pause time in micro seconds (100000 = 1s)
    */
-  @observable minimalPauseTime: number = 200000;
+  @observable minimalPauseTime: number = 100000;
   @observable slot: number = 0;
   @observable showGarbageCollector: boolean = true;
   @observable hideSmallSlots: boolean = true;
