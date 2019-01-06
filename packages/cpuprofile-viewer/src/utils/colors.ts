@@ -1,4 +1,4 @@
-import { FlameGraphNode } from "./cpuProfileSamplesToFlameGraph";
+import { FlameGraphNode } from "cpuprofile-to-flamegraph";
 
 export const colors = {
   NodeInternal: "#D35B7B",

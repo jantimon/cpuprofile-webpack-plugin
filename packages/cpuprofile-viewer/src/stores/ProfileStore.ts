@@ -4,15 +4,17 @@ import {
   convertToMergedFlameGraph,
   FlameGraphNode
 } from "cpuprofile-to-flamegraph";
+import { getCpuProfileWithoutGarbageCollectionNodes } from "../utils/cpuProfileConverter";
+import { getFlameGraphWithoutPauseBreakers } from "../utils/flameGraphConverter";
 
 export class ProfileStore {
   cpuProfile: Profile;
   /**
    * Pause time in micro seconds (100000 = 1s)
    */
-  @observable minimalPauseTime: number = 100000;
+  @observable minimalPauseTime: number = 200000;
   @observable slot: number = 0;
-  @observable showGarbageCollector: boolean = true;
+  @observable showGarbageCollector: boolean = false;
   @observable hideSmallSlots: boolean = true;
 
   constructor(cpuProfile: Profile) {
@@ -22,25 +24,9 @@ export class ProfileStore {
   @computed get filteredCpuProfile(): Profile {
     if (this.showGarbageCollector) {
       return this.cpuProfile;
+    } else {
+      return getCpuProfileWithoutGarbageCollectionNodes(this.cpuProfile);
     }
-    // Get profile without garbage collector entries
-    const garbageCollectorIds = this.cpuProfile.nodes
-      .filter(node => node.callFrame.functionName === "(garbage collector)")
-      .map(node => node.id);
-    const filteredSamples: Array<number> = [];
-    const filteredTimeDeltas: Array<number> = [];
-    for (let i = 0; i < this.cpuProfile.samples.length; i++) {
-      const sampleId = this.cpuProfile.samples[i];
-      if (garbageCollectorIds.indexOf(sampleId) === -1) {
-        filteredSamples.push(sampleId);
-        filteredTimeDeltas.push(this.cpuProfile.timeDeltas[i]);
-      }
-    }
-    return {
-      ...this.cpuProfile,
-      samples: filteredSamples,
-      timeDeltas: filteredTimeDeltas
-    };
   }
 
   /**
@@ -67,6 +53,12 @@ export class ProfileStore {
     return graph;
   }
 
+  @computed get filteredFlameGraph() {
+    return this.hideSmallSlots
+      ? getFlameGraphWithoutPauseBreakers(this.mergedFlameGraph)
+      : this.mergedFlameGraph;
+  }
+
   /**
    * Return the execution time of the entire profile
    */
@@ -75,7 +67,8 @@ export class ProfileStore {
   }
 
   @computed get slots() {
-    const children = this.mergedFlameGraph.children;
+    const children = this.filteredFlameGraph.children;
+    console.log(children);
     let currentExecutionSum = 0;
     let currentSlotStart = 0;
     const slots: Array<{ start: number; end: number; duration: number }> = [];
@@ -117,10 +110,10 @@ export class ProfileStore {
   @computed get activeSlotFlameGraph() {
     const activeSlot = Math.min(this.slots.length - 1, this.slot);
     const breakIndex = this.slots[activeSlot];
-    const childNodes = this.mergedFlameGraph.children.filter(
+    const childNodes = this.filteredFlameGraph.children.filter(
       (_, i) => i >= breakIndex.start && i <= breakIndex.end
     );
-    return Object.assign({}, this.mergedFlameGraph, { children: childNodes });
+    return Object.assign({}, this.filteredFlameGraph, { children: childNodes });
   }
 
   /**
