@@ -31,11 +31,11 @@ export function colorMapper(d: { data: FlameGraphNode }) {
   if (isWebpack) {
     return colors.Webpack;
   }
-  const isLoader = /\-loader\//.test(nodeModuleName);
+  const isLoader = /\-loader/.test(nodeModuleName);
   if (isLoader) {
     return colors.Loader;
   }
-  const isPlugin = /\-plugin\//.test(nodeModuleName);
+  const isPlugin = /\-plugin/.test(nodeModuleName);
   if (isPlugin) {
     return colors.Plugin;
   }
