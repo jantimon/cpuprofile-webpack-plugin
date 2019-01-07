@@ -68,7 +68,6 @@ export class ProfileStore {
 
   @computed get slots() {
     const children = this.filteredFlameGraph.children;
-    console.log(children);
     let currentExecutionSum = 0;
     let currentSlotStart = 0;
     const slots: Array<{ start: number; end: number; duration: number }> = [];

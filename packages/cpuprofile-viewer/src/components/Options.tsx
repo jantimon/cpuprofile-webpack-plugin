@@ -15,11 +15,14 @@ export const Options = observer(
           onChange={({ target }) => (profileStore.slot = Number(target.value))}
           value={profileStore.slot}
         >
-          {profileStore.slots.map(({ duration }, i) => (
-            <option value={i} key={i}>
-              Part {i} ({prettifyExecutionTime(duration)})
-            </option>
-          ))}
+          <option value={0}>Summary</option>
+          {profileStore.slots
+            .filter((slot, i) => i)
+            .map(({ duration }, i) => (
+              <option value={i + 1} key={i}>
+                Part {i + 1} ({prettifyExecutionTime(duration)})
+              </option>
+            ))}
         </Select>
       </div>
       <FormControlLabel

@@ -38,13 +38,6 @@ export function getFlameGraphWithoutPauseBreakers(
       filteredChildren.push(childNode);
       continue;
     }
-    console.log(
-      "merge",
-      i - 1,
-      i,
-      i + 1,
-      Math.round(surroundedExecutionTime / 100)
-    );
     // Merge programe nodes if possible
     filteredChildren[previousNodeIndex] = {
       ...previousNode,

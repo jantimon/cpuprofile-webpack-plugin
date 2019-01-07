@@ -9,25 +9,33 @@ export const colors = {
 };
 
 export function colorMapper(d: { data: FlameGraphNode }) {
+  const flamegraphNode = d.data;
   const isNodeInternal =
-    !d.data.profileNode ||
-    String(d.data.profileNode.callFrame.url).indexOf("file://") !== 0;
+    !flamegraphNode.profileNode ||
+    (String(flamegraphNode.profileNode.callFrame.url).indexOf("file://") !==
+      0 &&
+      !flamegraphNode.nodeModule);
 
   if (isNodeInternal) {
     return colors.NodeInternal;
   }
-  const url = String(d.data.profileNode.callFrame.url);
-  const isWebpack = /\/(webpack|loader-runner|tapable|webpack-dev-middleware)\//.test(
-    url
-  );
+  const nodeModuleName = flamegraphNode.nodeModule || "";
+  const isWebpack =
+    [
+      "webpack",
+      "loader-runner",
+      "tapable",
+      "webpack-dev-middleware",
+      "enhanced-resolve"
+    ].indexOf(nodeModuleName) !== -1;
   if (isWebpack) {
     return colors.Webpack;
   }
-  const isLoader = /\/[^\/]+\-loader\//.test(url);
+  const isLoader = /\/[^\/]+\-loader\//.test(nodeModuleName);
   if (isLoader) {
     return colors.Loader;
   }
-  const isPlugin = /\/[^\/]+\-plugin\//.test(url);
+  const isPlugin = /\/[^\/]+\-plugin\//.test(nodeModuleName);
   if (isPlugin) {
     return colors.Plugin;
   }

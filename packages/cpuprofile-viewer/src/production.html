@@ -7,7 +7,8 @@
     <title>Profile</title>
   </head>
   <body>
-    <script type="text/json" id="cpuProfile">%%profile%%</script>
+    <script type="text/json" id="cpuProfile">%~~%profile%~~%</script>
+    <script type="text/json" id="versions">%~~%versions%~~%</script>
     <%= htmlWebpackPlugin.files.css.map((cssFile) => {
       return "<styl" + "e>" + compilation.assets[cssFile.substr(htmlWebpackPlugin.files.publicPath.length)].source() + "</style>"
     }).join('') %>
