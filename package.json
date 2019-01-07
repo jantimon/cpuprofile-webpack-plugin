@@ -12,7 +12,7 @@
     "prettier:tsx": "prettier --write packages/**/*.tsx",
     "prettier:ts": "prettier --write packages/**/*.ts",
     "prettier:js": "prettier --write **/*.js",
-    "bootstrap": "npx lerna bootstrap",
+    "prepare": "npx lerna bootstrap",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
