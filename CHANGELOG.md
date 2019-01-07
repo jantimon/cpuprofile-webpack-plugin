@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.6.1"></a>
+## [1.6.1](https://github.com/jantimon/cpuprofile-webpack-plugin/compare/v1.6.0...v1.6.1) (2019-01-07)
+
+
+### Bug Fixes
+
+* Detect loaders correctly ([f39c209](https://github.com/jantimon/cpuprofile-webpack-plugin/commit/f39c209))
+
+
+
 <a name="1.6.0"></a>
 # [1.6.0](https://github.com/jantimon/cpuprofile-webpack-plugin/compare/v1.5.0...v1.6.0) (2019-01-07)
 
