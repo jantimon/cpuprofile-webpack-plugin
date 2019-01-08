@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.7.0"></a>
+# [1.7.0](https://github.com/jantimon/cpuprofile-webpack-plugin/compare/v1.6.4...v1.7.0) (2019-01-08)
+
+
+### Bug Fixes
+
+* Show the correct time informations ([e9836cd](https://github.com/jantimon/cpuprofile-webpack-plugin/commit/e9836cd))
+
+
+### Features
+
+* Add cpu profile overview table ([789db0c](https://github.com/jantimon/cpuprofile-webpack-plugin/commit/789db0c))
+
+
+
 <a name="1.6.4"></a>
 ## [1.6.4](https://github.com/jantimon/cpuprofile-webpack-plugin/compare/v1.6.3...v1.6.4) (2019-01-07)
 
