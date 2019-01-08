@@ -14,6 +14,7 @@ import { colorMapper } from "./utils/colors";
 import { prettifyExecutionTime } from "./utils/times";
 import { Summary } from "./components/Summary";
 import { Options } from "./components/Options";
+import { ProfileSectionOverview } from "./components/ProfileSectionOverview";
 
 const versionElement = document.getElementById("versions")!;
 const versions = JSON.parse(versionElement.innerHTML);
@@ -64,7 +65,15 @@ const App = observer(() => (
       </Paper>
     ) : (
       <Paper>
-        <VersionOverview versions={versions} />
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          <div style={{ display: "inline-block" }}>
+            <VersionOverview versions={versions} />
+          </div>
+          <div style={{ width: 20 }} />
+          <div style={{ display: "inline-block" }}>
+            <ProfileSectionOverview profileStore={profileStore} />
+          </div>
+        </div>
       </Paper>
     )}
   </React.Fragment>
