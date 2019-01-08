@@ -10,7 +10,7 @@ import { getFlameGraphWithoutPauseBreakers } from "../utils/flameGraphConverter"
 export class ProfileStore {
   cpuProfile: Profile;
   /**
-   * Pause time in micro seconds (100000 = 1s)
+   * Pause time in micro seconds (1000000 = 1s)
    */
   @observable minimalPauseTime: number = 200000;
   @observable slot: number = 0;
@@ -63,7 +63,7 @@ export class ProfileStore {
    * Return the execution time of the entire profile
    */
   @computed get executionTime(): number {
-    return (this.cpuProfile.endTime - this.cpuProfile.startTime) / 60000;
+    return this.cpuProfile.endTime - this.cpuProfile.startTime;
   }
 
   @computed get slots() {
