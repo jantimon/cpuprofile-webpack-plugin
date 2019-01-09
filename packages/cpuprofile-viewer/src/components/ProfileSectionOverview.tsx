@@ -30,18 +30,22 @@ export const ProfileSectionOverview = observer(
       <TableBody>
         {profileStore.slots
           .filter((slot, i) => i > 0)
-          .map((slot, i) => (
+          .map((slot, i, slots) => (
             <React.Fragment key={`${slot.start}-${slot.end}`}>
               {i === 0 ? null : (
                 <TableRow>
-                  <TableCell component="th" scope="row">
+                  <TableCell
+                    component="th"
+                    scope="row"
+                    style={{ color: "#999" }}
+                  >
                     Sleep
                   </TableCell>
-                  <TableCell align="right">
+                  <TableCell align="right" style={{ color: "#999" }}>
                     {prettifyExecutionTime(
                       sleepDuration(
                         profileStore,
-                        profileStore.slots[i - 1].end + 1,
+                        slots[i - 1].end + 1,
                         slot.start - 1
                       )
                     )}

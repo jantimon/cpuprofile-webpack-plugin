@@ -18,7 +18,7 @@ export function getFlameGraphWithoutPauseBreakers(
     }
     const previousNodeIndex = filteredChildren.length - 1;
     const previousNode = filteredChildren[previousNodeIndex];
-    const nextNode = originalChildren[i - 1];
+    const nextNode = originalChildren[i + 1];
     const previousNodeIsProgramNode =
       previousNode && previousNode.name === "(program)";
     const nextNodeIsProgramNode = nextNode && nextNode.name === "(program)";
@@ -28,7 +28,9 @@ export function getFlameGraphWithoutPauseBreakers(
       continue;
     }
     const surroundedExecutionTime =
-      previousNode.executionTime + nextNode.executionTime;
+      previousNode.executionTime +
+      childNode.executionTime +
+      nextNode.executionTime;
     // Don't remove nodes if the surrounding program nodes
     // are shorter than 100ms
     if (
@@ -38,6 +40,12 @@ export function getFlameGraphWithoutPauseBreakers(
       filteredChildren.push(childNode);
       continue;
     }
+    console.log({
+      previousNode: previousNode.executionTime,
+      childNode: childNode.executionTime,
+      nextNode: nextNode.executionTime,
+      surroundedExecutionTime
+    });
     // Merge programe nodes if possible
     filteredChildren[previousNodeIndex] = {
       ...previousNode,
