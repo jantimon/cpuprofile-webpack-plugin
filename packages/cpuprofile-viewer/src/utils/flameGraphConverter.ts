@@ -40,12 +40,6 @@ export function getFlameGraphWithoutPauseBreakers(
       filteredChildren.push(childNode);
       continue;
     }
-    console.log({
-      previousNode: previousNode.executionTime,
-      childNode: childNode.executionTime,
-      nextNode: nextNode.executionTime,
-      surroundedExecutionTime
-    });
     // Merge programe nodes if possible
     filteredChildren[previousNodeIndex] = {
       ...previousNode,
@@ -71,6 +65,7 @@ export type FlameGraphCategory =
   | "plugin"
   | "webpack"
   | "unknown"
+  | "nodeInternal"
   | "garbageCollector";
 /**
  * Returns the category of the given FlameGraphNode
@@ -92,6 +87,12 @@ export function getFlameGraphCategory(
       return "webpack";
     }
   }
+
+  const url = node.profileNode.callFrame.url;
+  if (url === "" || url.indexOf("internal") === 0 || url.indexOf("/") === -1) {
+    return "nodeInternal";
+  }
+
   return "unknown";
 }
 
@@ -152,22 +153,50 @@ export function getFlameGraphNodeTiminigs(node: FlameGraphNode) {
       unknown: 0
     }
   );
-
+  // Merge child timings of webpack, nodejs and unknown into plugins and loaders
   if (
     nodeCategory === "plugin" ||
     nodeCategory === "loader" ||
     nodeCategory === "webpack"
   ) {
-    const webpack = (recursiveChildTimes as { webpack?: number }).webpack || 0;
-    const selfTiming =
-      timingKey === "webpack"
-        ? 0
-        : (recursiveChildTimes as any)[timingKey] || 0;
+    // The webpack time should not include seal, parse and emit children
+    const includeWebpackParts =
+      nodeCategory !== "webpack"
+        ? ["webpack (seal)", "webpack (parse)", "webpack (emit)"]
+        : [];
+    // Sum up all children if they have the same name, are from webpack or nodeinternals
+    let inheritedTime = 0;
+    let includedTime = {};
+    new Set(
+      ["nodeInternal", "webpack", "unknown", timingKey].concat(
+        includeWebpackParts
+      )
+    ).forEach(childTimeKey => {
+      if (recursiveChildTimes[childTimeKey]) {
+        inheritedTime += recursiveChildTimes[childTimeKey];
+      }
+      // Reset the timing to 0 as they are already
+      // Part of the sum
+      includedTime[childTimeKey] = 0;
+    });
+    // Merge timings
     return {
       ...recursiveChildTimes,
-      webpack: 0,
-      [timingKey]: recursiveChildTimes.unknown + webpack + selfTiming,
-      unknown: 0
+      ...includedTime,
+      [timingKey]: inheritedTime
+    };
+  }
+  // Merge nodeInternal childs into unknown
+  if (
+    nodeCategory === "unknown" &&
+    (("nodeInternal" in recursiveChildTimes) as { nodeInternal?: number })
+  ) {
+    const nodeInternal = (recursiveChildTimes as { nodeInternal?: number })
+      .nodeInternal!;
+    return {
+      ...recursiveChildTimes,
+      unknown: nodeInternal + (recursiveChildTimes.unknown || 0),
+      nodeInternal: 0
     };
   }
 

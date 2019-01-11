@@ -24,6 +24,7 @@ export const ProfileSectionOverview = observer(
         <TableRow>
           <TableCell>Part</TableCell>
           <TableCell align="right">Duration</TableCell>
+          <TableCell>Phases</TableCell>
           <TableCell />
         </TableRow>
       </TableHead>
@@ -51,6 +52,7 @@ export const ProfileSectionOverview = observer(
                     )}
                   </TableCell>
                   <TableCell />
+                  <TableCell />
                 </TableRow>
               )}
               <TableRow>
@@ -59,6 +61,13 @@ export const ProfileSectionOverview = observer(
                 </TableCell>
                 <TableCell align="right">
                   {prettifyExecutionTime(slot.duration)}
+                </TableCell>
+                <TableCell>
+                  {Object.keys(profileStore.slotPhases[i + 1])
+                    .filter(
+                      phaseName => profileStore.slotPhases[i + 1][phaseName]
+                    )
+                    .join(", ")}
                 </TableCell>
                 <TableCell>
                   <Button

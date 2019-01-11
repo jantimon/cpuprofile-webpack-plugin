@@ -7,8 +7,6 @@ import {
 import { getCpuProfileWithoutGarbageCollectionNodes } from "../utils/cpuProfileConverter";
 import {
   getFlameGraphWithoutPauseBreakers,
-  getFlameGraphCategory,
-  getFlameGraphSubCategory,
   getFlameGraphNodeTiminigs
 } from "../utils/flameGraphConverter";
 
@@ -71,7 +69,7 @@ export class ProfileStore {
     return this.cpuProfile.endTime - this.cpuProfile.startTime;
   }
 
-  @computed get slots() {
+  @computed get slotPositions() {
     const children = this.filteredFlameGraph.children;
     let currentExecutionSum = 0;
     let currentSlotStart = 0;
@@ -108,16 +106,43 @@ export class ProfileStore {
     return filteredSlots;
   }
 
+  @computed get slots() {
+    return this.slotPositions.map(slotPosition => {
+      const childNodes = this.filteredFlameGraph.children.filter(
+        (_, i) => i >= slotPosition.start && i <= slotPosition.end
+      );
+      const flameGraphNode = Object.assign({}, this.filteredFlameGraph, {
+        children: childNodes,
+        executionTime: slotPosition.duration
+      });
+
+      return {
+        ...slotPosition,
+        flameGraphNode
+      };
+    });
+  }
+
+  @computed get slotPhases() {
+    return this.slotsTimeDetails.map(timing => ({
+      parse: Boolean(timing["webpack (parse)"]),
+      seal: Boolean(timing["webpack (seal)"]),
+      emit: Boolean(timing["webpack (emit)"])
+    }));
+  }
+
+  @computed get slotsTimeDetails() {
+    return this.slots.map(({ flameGraphNode }) => {
+      return getFlameGraphNodeTiminigs(flameGraphNode);
+    });
+  }
+
   /**
    * Returns the flame graph of the active slot
    */
   @computed get activeSlotFlameGraph() {
     const activeSlot = Math.min(this.slots.length - 1, this.slot);
-    const breakIndex = this.slots[activeSlot];
-    const childNodes = this.filteredFlameGraph.children.filter(
-      (_, i) => i >= breakIndex.start && i <= breakIndex.end
-    );
-    return Object.assign({}, this.filteredFlameGraph, { children: childNodes });
+    return this.slots[activeSlot].flameGraphNode;
   }
 
   /**

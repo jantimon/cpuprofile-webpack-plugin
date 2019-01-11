@@ -21,17 +21,20 @@ export const Summary = observer(
         </TableRow>
       </TableHead>
       <TableBody>
-        {profileStore.durationSummary.map(row => (
-          <TableRow key={row.name}>
-            <TableCell component="th" scope="row">
-              <ColorIcon colorName={nameToColorMap(row.name)} /> {row.name}
-            </TableCell>
-            <TableCell align="right">
-              {prettifyExecutionTime(row.duration)}
-            </TableCell>
-            <TableCell align="right">{row.relative}</TableCell>
-          </TableRow>
-        ))}
+        {profileStore.durationSummary.map(
+          row =>
+            row.duration > 0 && (
+              <TableRow key={row.name}>
+                <TableCell component="th" scope="row">
+                  <ColorIcon colorName={nameToColorMap(row.name)} /> {row.name}
+                </TableCell>
+                <TableCell align="right">
+                  {prettifyExecutionTime(row.duration)}
+                </TableCell>
+                <TableCell align="right">{row.relative}</TableCell>
+              </TableRow>
+            )
+        )}
       </TableBody>
     </Table>
   )
@@ -47,8 +50,8 @@ function nameToColorMap(rowTitle: string): ColorName {
   if (/webpack/.test(rowTitle)) {
     return "Webpack";
   }
-  if (rowTitle === "garbageCollector") {
+  if (rowTitle === "garbageCollector" || rowTitle === "nodeInternal") {
     return "NodeInternal";
   }
-  return "unkown";
+  return "unknown";
 }
