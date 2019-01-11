@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.9.0"></a>
+# [1.9.0](https://github.com/jantimon/cpuprofile-webpack-plugin/compare/v1.7.1...v1.9.0) (2019-01-11)
+
+
+### Features
+
+* Add phase column ([6295ae1](https://github.com/jantimon/cpuprofile-webpack-plugin/commit/6295ae1))
+* Split webpack details into categories ([f165570](https://github.com/jantimon/cpuprofile-webpack-plugin/commit/f165570))
+
+
+
 <a name="1.8.0"></a>
 # [1.8.0](https://github.com/jantimon/cpuprofile-webpack-plugin/compare/v1.7.1...v1.8.0) (2019-01-11)
 

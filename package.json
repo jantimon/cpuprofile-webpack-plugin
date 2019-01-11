@@ -1,6 +1,6 @@
 {
   "name": "cpuprofile-webpack-plugin",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "description": "cpuprofile-webpack-plugin",
   "scripts": {
     "commit": "git-cz",
