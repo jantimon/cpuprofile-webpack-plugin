@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.8.0"></a>
+# [1.8.0](https://github.com/jantimon/cpuprofile-webpack-plugin/compare/v1.7.1...v1.8.0) (2019-01-11)
+
+
+### Features
+
+* Split webpack details into categories ([e2f5466](https://github.com/jantimon/cpuprofile-webpack-plugin/commit/e2f5466))
+
+
+
 <a name="1.7.1"></a>
 ## [1.7.1](https://github.com/jantimon/cpuprofile-webpack-plugin/compare/v1.7.0...v1.7.1) (2019-01-09)
 
