@@ -69,7 +69,7 @@ const App = observer(() => (
           <div style={{ display: "inline-block" }}>
             <VersionOverview versions={versions} />
           </div>
-          <div style={{ width: 20 }} />
+          <div style={{ width: 40 }} />
           <div style={{ display: "inline-block" }}>
             <ProfileSectionOverview profileStore={profileStore} />
           </div>

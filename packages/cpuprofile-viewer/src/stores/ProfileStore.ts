@@ -5,7 +5,12 @@ import {
   FlameGraphNode
 } from "cpuprofile-to-flamegraph";
 import { getCpuProfileWithoutGarbageCollectionNodes } from "../utils/cpuProfileConverter";
-import { getFlameGraphWithoutPauseBreakers } from "../utils/flameGraphConverter";
+import {
+  getFlameGraphWithoutPauseBreakers,
+  getFlameGraphCategory,
+  getFlameGraphSubCategory,
+  getFlameGraphNodeTiminigs
+} from "../utils/flameGraphConverter";
 
 export class ProfileStore {
   cpuProfile: Profile;
@@ -132,77 +137,17 @@ export class ProfileStore {
   }
 
   @computed get durationSummary() {
-    const webpackModules = [
-      "webpack",
-      "loader-runner",
-      "tapable",
-      "webpack-dev-middleware"
-    ];
-    function getNodeTime(node: FlameGraphNode) {
-      const isLoader = node.nodeModule && /\-loader$/.test(node.nodeModule);
-      if (isLoader) {
-        return {
-          [node.nodeModule!]: node.executionTime
-        };
-      }
-      if (node.name === "(garbage collector)") {
-        return {
-          garbageCollector: node.executionTime
-        };
-      }
-
-      if (node.children.length === 0) {
-        const isWebpack =
-          node.nodeModule && webpackModules.indexOf(node.nodeModule) !== -1;
-        if (isWebpack) {
-          return {
-            webpack: node.executionTime
-          };
-        } else {
-          return {
-            unkown: node.executionTime
-          };
-        }
-      }
-
-      const recursiveChildTimes = node.children.reduce(
-        (sum, childNode) => {
-          const childTimes = getNodeTime(childNode);
-          Object.keys(childTimes).forEach(type => {
-            sum[type] = (sum[type] || 0) + childTimes[type];
-          });
-          return sum;
-        },
-        {
-          unkown: 0
-        }
-      );
-
-      const isWebpack =
-        node.nodeModule && webpackModules.indexOf(node.nodeModule) !== -1;
-      if (recursiveChildTimes.unkown && isWebpack) {
-        return {
-          ...recursiveChildTimes,
-          webpack: recursiveChildTimes.unkown,
-          unkown: 0
-        };
-      }
-
-      return recursiveChildTimes;
-    }
-    const nodeTimes = getNodeTime(this.activeSlotFlameGraph);
-    const sum = Math.max(
-      1,
-      Object.keys(nodeTimes).reduce(
-        (sum, timeName) => sum + nodeTimes[timeName],
-        0
-      )
+    const nodeTimes = getFlameGraphNodeTiminigs(this.activeSlotFlameGraph);
+    const sum = Object.keys(nodeTimes).reduce(
+      (sum, timeName) => sum + nodeTimes[timeName],
+      0
     );
     const result = Object.keys(nodeTimes).map(timeName => {
       return {
         name: timeName,
         duration: nodeTimes[timeName],
-        relative: Math.round((nodeTimes[timeName] / sum) * 100) + "%"
+        relative:
+          sum === 0 ? "0%" : Math.round((nodeTimes[timeName] / sum) * 100) + "%"
       };
     });
     result.sort((a, b) =>

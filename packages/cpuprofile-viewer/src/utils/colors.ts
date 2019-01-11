@@ -8,6 +8,8 @@ export const colors = {
   unkown: "#E2AB63"
 };
 
+export type ColorName = keyof typeof colors;
+
 export function colorMapper(d: { data: FlameGraphNode }) {
   const flamegraphNode = d.data;
   const isNodeInternal =
