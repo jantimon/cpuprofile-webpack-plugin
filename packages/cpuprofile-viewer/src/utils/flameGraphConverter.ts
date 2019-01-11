@@ -59,3 +59,117 @@ export function getFlameGraphWithoutPauseBreakers(
     children: filteredChildren
   };
 }
+
+const webpackModules = [
+  "webpack",
+  "loader-runner",
+  "tapable",
+  "webpack-dev-middleware"
+];
+export type FlameGraphCategory =
+  | "loader"
+  | "plugin"
+  | "webpack"
+  | "unknown"
+  | "garbageCollector";
+/**
+ * Returns the category of the given FlameGraphNode
+ */
+export function getFlameGraphCategory(
+  node: FlameGraphNode
+): FlameGraphCategory {
+  if (node.name === "(garbage collector)") {
+    return "garbageCollector";
+  }
+  if (node.nodeModule) {
+    if (/\-loader$/.test(node.nodeModule)) {
+      return "loader";
+    }
+    if (/\-plugin$/.test(node.nodeModule)) {
+      return "plugin";
+    }
+    if (webpackModules.indexOf(node.nodeModule) !== -1) {
+      return "webpack";
+    }
+  }
+  return "unknown";
+}
+
+export function getFlameGraphSubCategory(
+  node: FlameGraphNode,
+  nodeCategory: FlameGraphCategory
+) {
+  const nodeModule = node.nodeModule;
+  if (!nodeModule) {
+    return nodeCategory;
+  }
+  if (nodeCategory === "plugin" || nodeCategory === "loader") {
+    return nodeModule;
+  }
+  if (
+    nodeModule === "webpack" &&
+    node.profileNode.callFrame.functionName === "emitFiles"
+  ) {
+    return "webpack (emit)";
+  }
+  if (
+    nodeModule === "webpack" &&
+    node.profileNode.callFrame.functionName === "seal"
+  ) {
+    return "webpack (seal)";
+  }
+  if (
+    nodeModule === "webpack" &&
+    node.profileNode.callFrame.functionName === "parse"
+  ) {
+    return "webpack (parse)";
+  }
+  return nodeCategory;
+}
+
+/**
+ * Iterate through all child nodes to meassure the time for plugins, loaders and webpack
+ */
+export function getFlameGraphNodeTiminigs(node: FlameGraphNode) {
+  const nodeCategory = getFlameGraphCategory(node);
+  const timingKey = getFlameGraphSubCategory(node, nodeCategory);
+  // If we are at the end of the tree return the childs execution time
+  if (node.children.length === 0) {
+    return {
+      [timingKey]: node.executionTime
+    };
+  }
+
+  const recursiveChildTimes = node.children.reduce(
+    (sum, childNode) => {
+      const childTimes = getFlameGraphNodeTiminigs(childNode);
+      Object.keys(childTimes).forEach(type => {
+        sum[type] = (sum[type] || 0) + childTimes[type];
+      });
+      return sum;
+    },
+    {
+      unknown: 0
+    }
+  );
+
+  if (
+    nodeCategory === "plugin" ||
+    nodeCategory === "loader" ||
+    nodeCategory === "webpack"
+  ) {
+    const webpack = (recursiveChildTimes as { webpack?: number }).webpack || 0;
+    const selfTiming =
+      timingKey === "webpack"
+        ? 0
+        : (recursiveChildTimes as any)[timingKey] || 0;
+    return {
+      ...recursiveChildTimes,
+      webpack: 0,
+      [timingKey]: recursiveChildTimes.unknown + webpack + selfTiming,
+      unknown: 0
+    };
+  }
+
+  return recursiveChildTimes;
+}

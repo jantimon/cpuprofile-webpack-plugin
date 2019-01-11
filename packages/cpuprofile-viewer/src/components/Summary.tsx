@@ -7,6 +7,8 @@ import { observer } from "mobx-react";
 import * as React from "react";
 import { ProfileStore } from "../stores/ProfileStore";
 import { prettifyExecutionTime } from "../utils/times";
+import { ColorIcon } from "./ColorPalette";
+import { ColorName } from "../utils/colors";
 
 export const Summary = observer(
   ({ profileStore }: { profileStore: ProfileStore }) => (
@@ -22,7 +24,7 @@ export const Summary = observer(
         {profileStore.durationSummary.map(row => (
           <TableRow key={row.name}>
             <TableCell component="th" scope="row">
-              {row.name}
+              <ColorIcon colorName={nameToColorMap(row.name)} /> {row.name}
             </TableCell>
             <TableCell align="right">
               {prettifyExecutionTime(row.duration)}
@@ -34,3 +36,19 @@ export const Summary = observer(
     </Table>
   )
 );
+
+function nameToColorMap(rowTitle: string): ColorName {
+  if (/\-plugin/.test(rowTitle)) {
+    return "Plugin";
+  }
+  if (/\-loader/.test(rowTitle)) {
+    return "Loader";
+  }
+  if (/webpack/.test(rowTitle)) {
+    return "Webpack";
+  }
+  if (rowTitle === "garbageCollector") {
+    return "NodeInternal";
+  }
+  return "unkown";
+}
