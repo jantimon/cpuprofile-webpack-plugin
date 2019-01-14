@@ -101,29 +101,30 @@ export function getFlameGraphSubCategory(
   nodeCategory: FlameGraphCategory
 ) {
   const nodeModule = node.nodeModule;
+  const categoryPostfix = ` (${nodeCategory})`;
   if (!nodeModule) {
     return nodeCategory;
   }
   if (nodeCategory === "plugin" || nodeCategory === "loader") {
-    return nodeModule;
+    return nodeModule + categoryPostfix;
   }
   if (
     nodeModule === "webpack" &&
     node.profileNode.callFrame.functionName === "emitFiles"
   ) {
-    return "webpack (emit)";
+    return "emit" + categoryPostfix;
   }
   if (
     nodeModule === "webpack" &&
     node.profileNode.callFrame.functionName === "seal"
   ) {
-    return "webpack (seal)";
+    return "seal" + categoryPostfix;
   }
   if (
     nodeModule === "webpack" &&
     node.profileNode.callFrame.functionName === "parse"
   ) {
-    return "webpack (parse)";
+    return "parse" + categoryPostfix;
   }
   return nodeCategory;
 }
@@ -162,7 +163,7 @@ export function getFlameGraphNodeTiminigs(node: FlameGraphNode) {
     // The webpack time should not include seal, parse and emit children
     const includeWebpackParts =
       nodeCategory !== "webpack"
-        ? ["webpack (seal)", "webpack (parse)", "webpack (emit)"]
+        ? ["seal (webpack)", "parse (webpack)", "emit (webpack)"]
         : [];
     // Sum up all children if they have the same name, are from webpack or nodeinternals
     let inheritedTime = 0;
@@ -174,10 +175,10 @@ export function getFlameGraphNodeTiminigs(node: FlameGraphNode) {
     ).forEach(childTimeKey => {
       if (recursiveChildTimes[childTimeKey]) {
         inheritedTime += recursiveChildTimes[childTimeKey];
+        // Reset the timing to 0 as they are already
+        // Part of the sum
+        includedTime[childTimeKey] = 0;
       }
-      // Reset the timing to 0 as they are already
-      // Part of the sum
-      includedTime[childTimeKey] = 0;
     });
     // Merge timings
     return {

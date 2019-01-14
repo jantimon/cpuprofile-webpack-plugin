@@ -21,20 +21,31 @@ export const Summary = observer(
         </TableRow>
       </TableHead>
       <TableBody>
-        {profileStore.durationSummary.map(
-          row =>
-            row.duration > 0 && (
-              <TableRow key={row.name}>
-                <TableCell component="th" scope="row">
-                  <ColorIcon colorName={nameToColorMap(row.name)} /> {row.name}
-                </TableCell>
-                <TableCell align="right">
-                  {prettifyExecutionTime(row.duration)}
-                </TableCell>
-                <TableCell align="right">{row.relative}</TableCell>
-              </TableRow>
-            )
-        )}
+        {profileStore.durationSummary.map(row => {
+          if (row.duration === 0) {
+            return;
+          }
+          const rowName =
+            row.name.indexOf("(") > 0 ? (
+              <React.Fragment>
+                {row.name.split("(")[0]}{" "}
+                <span style={{ opacity: 0.6 }}>({row.name.split("(")[1]}</span>
+              </React.Fragment>
+            ) : (
+              row.name
+            );
+          return (
+            <TableRow key={row.name}>
+              <TableCell component="th" scope="row">
+                <ColorIcon colorName={nameToColorMap(row.name)} /> {rowName}
+              </TableCell>
+              <TableCell align="right">
+                {prettifyExecutionTime(row.duration)}
+              </TableCell>
+              <TableCell align="right">{row.relative}</TableCell>
+            </TableRow>
+          );
+        })}
       </TableBody>
     </Table>
   )

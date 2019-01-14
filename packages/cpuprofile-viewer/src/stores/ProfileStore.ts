@@ -10,6 +10,17 @@ import {
   getFlameGraphNodeTiminigs
 } from "../utils/flameGraphConverter";
 
+export type Slot = {
+  flameGraphNode: FlameGraphNode & {
+    children: FlameGraphNode[];
+    executionTime: number;
+  };
+  start: number;
+  end: number;
+  duration: number;
+  slotIndex: number;
+};
+
 export class ProfileStore {
   cpuProfile: Profile;
   /**
@@ -103,10 +114,12 @@ export class ProfileStore {
       end: 0,
       duration: 0
     });
-    return filteredSlots;
+    return filteredSlots.map((slot, i) =>
+      Object.assign(slot, { slotIndex: i })
+    );
   }
 
-  @computed get slots() {
+  @computed get slots(): Array<Slot> {
     return this.slotPositions.map(slotPosition => {
       const childNodes = this.filteredFlameGraph.children.filter(
         (_, i) => i >= slotPosition.start && i <= slotPosition.end
@@ -125,10 +138,35 @@ export class ProfileStore {
 
   @computed get slotPhases() {
     return this.slotsTimeDetails.map(timing => ({
-      parse: Boolean(timing["webpack (parse)"]),
-      seal: Boolean(timing["webpack (seal)"]),
-      emit: Boolean(timing["webpack (emit)"])
+      loader: Object.keys(timing).some(key => key.indexOf("(loader)") !== -1),
+      parse: Boolean(timing["parse (webpack)"]),
+      seal: Boolean(timing["seal (webpack)"]),
+      emit: Boolean(timing["emit (webpack)"])
     }));
+  }
+
+  /**
+   * Slots which include the `emitFiles` phase
+   * are concidered to be the end of a build
+   *
+   * buildSlotIndexes includes all builds split by
+   * a emit phase
+   */
+  @computed get buildSlotIndexes(): Array<Array<Slot>> {
+    const phases = this.slotPhases;
+    const slots = this.slots;
+    const builds: Array<Array<Slot>> = [];
+    let buildIndex = 0;
+    for (let i = 0; i < slots.length; i++) {
+      if (!builds[buildIndex]) {
+        builds.push([]);
+      }
+      builds[buildIndex].push(slots[i]);
+      if (phases[i].emit) {
+        buildIndex++;
+      }
+    }
+    return builds;
   }
 
   @computed get slotsTimeDetails() {
