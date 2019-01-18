@@ -110,7 +110,9 @@ export function getFlameGraphSubCategory(
   }
   if (
     nodeModule === "webpack" &&
-    node.profileNode.callFrame.functionName === "emitFiles"
+    ["emitFiles", "writeOut"].indexOf(
+      node.profileNode.callFrame.functionName || ""
+    ) !== -1
   ) {
     return "emit" + categoryPostfix;
   }
