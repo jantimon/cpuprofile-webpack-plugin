@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
-* Improve emitFiles pase detection ([22bdabd](https://github.com/jantimon/cpuprofile-webpack-plugin/commit/22bdabd))
+* Improve emitFiles phase detection ([22bdabd](https://github.com/jantimon/cpuprofile-webpack-plugin/commit/22bdabd))
 
 
 
