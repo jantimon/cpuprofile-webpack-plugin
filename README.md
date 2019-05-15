@@ -6,6 +6,9 @@ The profile can be imported into GoogleChrome Dev Tools.
 In addition a [flame graph](https://github.com/spiermar/d3-flame-graph) representation is generated:
 ![Flame Graph Example](https://github.com/jantimon/cpuprofile-webpack-plugin/raw/master/preview.gif "Flame Graph Example")
 
+## ⚠️ Warning ⚠️
+This library is a work in progress, use at your own risk. But feel free to help out where you see bugs or incomplete things!
+
 
 ## Usage
 
