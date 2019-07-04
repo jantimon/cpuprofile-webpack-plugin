@@ -5,9 +5,13 @@
   "dependencies": {
     "webpack": "4.28.3",
     "webpack-cli": "3.2.1",
-    "webpack-dev-server": "3.1.14"
+    "webpack-dev-server": "3.1.14",
+    "snyk": "^1.189.0"
   },
   "scripts": {
-    "test": "webpack --mode production"
-  }
+    "test": "webpack --mode production",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
+  },
+  "snyk": true
 }
