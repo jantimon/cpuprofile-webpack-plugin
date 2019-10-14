@@ -39,7 +39,7 @@
   "author": "Jan Nicklas",
   "license": "MIT",
   "repository": "jantimon/cpuprofile-webpack-plugin",
-  "homepage": "https://github.com/jantimon/cpuprofile-webpack-plugin#cpuprofile-webpack-plugin"
+  "homepage": "https://github.com/jantimon/cpuprofile-webpack-plugin#cpuprofile-webpack-plugin",
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
