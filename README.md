@@ -31,7 +31,9 @@ const CpuProfilerWebpackPlugin = require('cpuprofile-webpack-plugin');
 
 module.exports = {
   plugins: [
-    new CpuProfilerWebpackPlugin()
+    new CpuProfilerWebpackPlugin({
+      open: true // open the generated html!
+    })
   ]
 }
 ```
