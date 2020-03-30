@@ -1,13 +1,12 @@
 const profile = require("./lib/profiler");
 let isListeningOnStdin = false;
 const defaultOpts = {
-  profilePath: void 0,
   open: true // auto open the generated html
 };
 
 module.exports = class CpuProfileWebpackPlugin {
-  constructor(opts) {
-    profile(Object.assign({}, defaultOpts, opts));
+  constructor(profilePath, opts) {
+    profile(profilePath, Object.assign({}, defaultOpts, opts));
   }
   apply(compiler) {
     compiler.hooks.watchRun.tapAsync(
