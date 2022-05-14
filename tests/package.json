@@ -4,8 +4,8 @@
   "version": "1.0.0",
   "dependencies": {
     "webpack": "4.28.3",
-    "webpack-cli": "3.2.1",
-    "webpack-dev-server": "3.1.14"
+    "webpack-cli": "3.3.5",
+    "webpack-dev-server": "4.0.0"
   },
   "scripts": {
     "test": "webpack --mode production"
