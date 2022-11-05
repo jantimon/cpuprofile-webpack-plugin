@@ -9,7 +9,7 @@
     "@types/d3": "5.5.0",
     "@types/react": "16.7.18",
     "@types/react-dom": "16.0.11",
-    "asset-config-webpack-plugin": "1.2.0",
+    "asset-config-webpack-plugin": "2.0.0",
     "d3": "5.7.0",
     "d3-flame-graph": "2.0.6",
     "d3-flame-graphs": "3.1.1",
